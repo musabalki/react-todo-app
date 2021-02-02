@@ -1,25 +1,37 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useState } from 'react'
+import { useTodoLayerValue } from './context/TodoContext'
+import TodoList from "./components/TodoList"
+import "./App.css"
+const App = (props) => {
+  const [{ todos }, dispatch] = useTodoLayerValue();
+  const [content,setContent]=useState('');
 
-function App() {
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if(!content && content.length<1){
+      return;
+    }
+    const newTodo = {
+      id:Math.floor(Math.random()*454111),
+      content,
+      isCompleted:false
+    }
+    dispatch(
+      {type:"ADD_TODO",payload:newTodo}
+    )
+    setContent('')
+  }
+  console.log(todos)
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="container">
+      <form onSubmit={handleSubmit} className="todo-form">
+        <input className="todo-input" type="text" onChange={e=>setContent(e.target.value)} value={content} />
+        <button className="todo-button">Ekle</button>
+      </form>
+     
+      <TodoList todos={todos} />
     </div>
-  );
+  )
 }
 
-export default App;
+export default App
